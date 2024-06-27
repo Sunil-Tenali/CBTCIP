@@ -8,184 +8,129 @@ using namespace std;
 
 class Student {
 public:
-	int Roll_No;
+	int roll_no;
 	string name;
-	float CGPA;
-};
+	float cgpa;
 
-void AddStudent(fstream& file) {
-
-}
-
-void DisplayDetails(fstream& file) {
-
-}
-
-void UpdateDetails(fstream& file) {
-
-}
-
-void DeleteFile(fstream& file) {
-
-}
-int main() {
-	int choice = 0;
-	while (choice != 6) {
-		cout << "\nMenu " << endl << endl;
-		cout << "1. Add Student" << endl;
-		cout << "2. Display student records " << endl;
-		cout << "3. Update student record " << endl;
-		cout << "4. Delete a Student Record " << endl;
-		cout << "5.exit" << endl;
-		cin >> choice;
-
-		fstream file;
-
-		switch (choice)
-		{
-		case 1:
-			file.open("student.dat", ios::app | ios::binary);
-			if (file.is_open()) {
-				AddStudent(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-		case 2:
-			file.open("student.dat", ios::in | ios::binary);
-			if (file.is_open()) {
-				DisplayDetails(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-
-		case 3:
-			file.open("student.dat", ios::in | ios::binary);
-			if (file.is_open()) {
-				UpdateDetails(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-
-		case 4:
-			file.open("student.dat", ios::in | ios::binary);
-			if (file.is_open()) {
-				DeleteFile(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-		case 5:
-			cout << "Exiting from the service....." << endl;
-			break;
-		default:
-			cout << "Invalid choice !!" << endl;
-			break;
-
-		}
-		return 0;
-	}#include <iostream>
-#include <fstream>
-#include <string>
-
-using namespace std;
-
-class Student {
-public:
-	int Roll_No;
-	string name;
-	float CGPA;
-};
-
-void AddStudent(fstream& file) {
-
-}
-
-void DisplayDetails(fstream& file) {
-
-}
-
-void UpdateDetails(fstream& file) {
-
-}
-
-void DeleteFile(fstream& file) {
-
-}
-int main() {
-	int choice = 0;
-	while (choice != 6) {
-		cout << "\nMenu " << endl << endl;
-		cout << "1. Add Student" << endl;
-		cout << "2. Display student records " << endl;
-		cout << "3. Update student record " << endl;
-		cout << "4. Delete a Student Record " << endl;
-		cout << "5.exit" << endl;
-		cin >> choice;
-
-		fstream file;
-
-		switch (choice)
-		{
-		case 1:
-			file.open("student.dat", ios::app | ios::binary);
-			if (file.is_open()) {
-				AddStudent(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-		case 2:
-			file.open("student.dat", ios::in | ios::binary);
-			if (file.is_open()) {
-				DisplayDetails(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-
-		case 3:
-			file.open("student.dat", ios::in | ios::binary);
-			if (file.is_open()) {
-				UpdateDetails(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-
-		case 4:
-			file.open("student.dat", ios::in | ios::binary);
-			if (file.is_open()) {
-				DeleteFile(file);
-				file.close();
-			}
-			else {
-				cout << "ERROR : Cannot open file " << endl;
-			}
-			break;
-		case 5:
-			cout << "Exiting from the service....." << endl;
-			break;
-		default:
-			cout << "Invalid choice !!" << endl;
-			break;
-
-		}
-		return 0;
+	void InoutDetails() {
+		cout << "Enter Students Roll Number : ";
+		cin >> roll_no;
+		cout << "\nEnter the name of the student : ";
+		cin.ignore();
+		getline(cin, name);
+		cout << "\nEnter students's CGPA : ";
+		cin >> cgpa;
 	}
+
+	void DisplayDetails() {
+		static bool headline = false;
+		if (!(headline)) {
+			cout << "\t\tStudent Details" << endl;
+			cout << "Roll Number" << "\t" << "Name" << "\t\t" << "CGPA" << endl;
+			cout << roll_no << "\t" << name << "\t\t" << cgpa << endl;
+			headline = true;
+		}
+		else {
+			cout << roll_no << "\t" << name << "\t\t" << cgpa << endl;
+
+		}
+	}
+	void UpdateDetais() {
+		cout << "Enter New Name : ";
+		cin.ignore();
+		getline(cin, name);
+		cout << "\nEnter the new CGPS : " << endl;
+		cin >> cgpa;
+	}
+};
+
+
+
+void AddStudent(fstream& file) {
+
+}
+
+void DisplayDetails(fstream& file) {
+
+}
+
+void UpdateDetails(fstream& file) {
+
+}
+
+void DeleteFile(fstream& file) {
+
+}
+int main()
+{
+	int choice = 0;
+	while (choice != 6) {
+		cout << "\nMenu " << endl << endl;
+		cout << "1. Add Student" << endl;
+		cout << "2. Display student records " << endl;
+		cout << "3. Update student record " << endl;
+		cout << "4. Delete a Student Record " << endl;
+		cout << "5.exit" << endl << endl;
+
+		cout << "Enter the option of choice from Menu : ";
+		cin >> choice;
+
+		fstream file;
+
+		switch (choice)
+		{
+		case 1:
+			file.open("student.dat", ios::app | ios::binary);
+			if (file.is_open()) {
+				AddStudent(file);
+				file.close();
+			}
+			else {
+				cout << "ERROR : Cannot open file " << endl;
+			}
+			break;
+		case 2:
+			file.open("student.dat", ios::in | ios::binary);
+			if (file.is_open()) {
+				DisplayDetails(file);
+				file.close();
+			}
+			else {
+				cout << "ERROR : Cannot open file " << endl;
+			}
+			break;
+
+		case 3:
+			file.open("student.dat", ios::in | ios::binary);
+			if (file.is_open()) {
+				UpdateDetails(file);
+				file.close();
+			}
+			else {
+				cout << "ERROR : Cannot open file " << endl;
+			}
+			break;
+
+		case 4:
+			file.open("student.dat", ios::in | ios::binary);
+			if (file.is_open()) {
+				DeleteFile(file);
+				file.close();
+			}
+			else {
+				cout << "ERROR : Cannot open file " << endl;
+			}
+			break;
+		case 5:
+			cout << "\nExiting from the service....." << endl;
+			return 1;
+			break;
+		default:
+			cout << "Invalid choice !!" << endl;
+			break;
+
+		}
+	}
+
+	return 0;
+}
