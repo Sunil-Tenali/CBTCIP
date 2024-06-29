@@ -1,46 +1,62 @@
 //Sunil Varma Tenali
 
+
 #include <iostream>
 #include <fstream>
 #include <string>
-
+#include<iomanip>
 using namespace std;
 
 class Student {
 public:
-	int roll_no;
+	int roll_no = 0;
 	string name;
-	float cgpa;
+	float cgpa = 0;
 
-	void InoutDetails() {
-		cout << "Enter Students Roll Number : ";
-		cin >> roll_no;
-		cout << "\nEnter the name of the student : ";
+	void InputDetails() {
+		cout << "\nEnter Students Roll Number : ";
+		while (!(cin >> roll_no) || roll_no < 0) {
+			cout << "Invalid input. Please enter a valid roll number: ";
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+		cin.ignore(numeric_limits<streamsize>::max(), '\n'); //clear the extra buffer
+
+		cout << "Enter the name of the student : ";
 		cin.ignore();
 		getline(cin, name);
-		cout << "\nEnter students's CGPA : ";
-		cin >> cgpa;
+
+		cout << "Enter students's CGPA : ";
+		while (!(cin >> cgpa) || cgpa < 0 || cgpa >10) {
+			cout << "Invalid input. Please enter a valid CGPA: ";
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	}
 
 	void DisplayDetails() {
 		static bool headline = false;
 		if (!(headline)) {
 			cout << "\t\tStudent Details" << endl;
-			cout << "Roll Number" << "\t" << "Name" << "\t\t" << "CGPA" << endl;
-			cout << roll_no << "\t" << name << "\t\t" << cgpa << endl;
+			cout << left << setw(15) << "Roll Number" << setw(30) << "Name" << setw(10) << "CGPA" << endl;
 			headline = true;
 		}
 		else {
-			cout << roll_no << "\t" << name << "\t\t" << cgpa << endl;
+			cout << left << setw(15) << roll_no << setw(30) << name << setw(10) << cgpa << endl;
 
 		}
 	}
-	void UpdateDetais() {
+	void Updatedetais() {
 		cout << "Enter New Name : ";
-		cin.ignore();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		getline(cin, name);
-		cout << "\nEnter the new CGPS : " << endl;
-		cin >> cgpa;
+		cout << "\nEnter the new CGPA : " << endl;
+		while (!(cin >> cgpa) || cgpa < 0 || cgpa >10) {
+			cout << "Invalid input. Please enter a valid CGPA: ";
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		}
 	}
 };
 
@@ -48,18 +64,124 @@ public:
 
 void AddStudent(fstream& file) {
 
+	Student student;
+	student.InputDetails();
+	file.write(reinterpret_cast<char*>(&student), sizeof(student));
 }
 
-void DisplayDetails(fstream& file) {
+void DisplayStudentDetails(fstream& file) {
+
+	Student student;
+	file.read(reinterpret_cast<char*>(&student), sizeof(student));
+	if (file.eof()) {
+		cout << "Record is empty Add students to record" << endl;
+	}
+	while (!(file.eof())) {
+		student.DisplayDetails();
+		file.read(reinterpret_cast<char*>(&student), sizeof(student));
+	}
+
 
 }
 
-void UpdateDetails(fstream& file) {
+void UpdateStudentDetails(fstream& file) {
 
+	int roll_no;
+	cout << "Enter the Roll Number of the student : ";
+
+	while (!(cin >> roll_no) || roll_no < 0) {
+		cout << "Invalid input. Please enter a valid roll number: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	fstream tempfile("temp.dat", ios::in | ios::out | ios::binary);
+
+	if (tempfile.is_open()) {
+		cout << "\nERROR : The temperory file cannot be opened" << endl;
+		return;
+	}
+
+	Student student;
+	bool found = false;
+
+	file.clear();
+	file.seekg(0, ios::beg);
+
+	file.read(reinterpret_cast<char*>(&student), sizeof(student));
+
+	while (!(file.eof())) {
+
+		if (student.roll_no == roll_no) {
+			student.Updatedetais();
+			found = true;
+		}
+		tempfile.write(reinterpret_cast<char*>(&student), sizeof(student));
+		file.read(reinterpret_cast<char*>(&student), sizeof(student));
+	}
+
+	tempfile.close();
+	file.close();
+
+	if (found) {
+		remove("student.dat");
+		rename("temp.dat", "student.dat");
+		cout << "\nStudent with Roll Number : " << roll_no << " record updated succesfully" << endl;
+	}
+	else {
+		cout << "\nStudent with Roll Number : " << roll_no << " is not found" << endl;
+		remove("temp.dat");
+	}
 }
 
 void DeleteFile(fstream& file) {
 
+	int roll_no;
+	cout << "\nEnter the Roll Number of the student : ";
+
+	while (!(cin >> roll_no) || roll_no < 0) {
+		cout << "Invalid input. Please enter a valid roll number: ";
+		cin.clear();
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	}
+
+	fstream tempfile("temp.dat", ios::in | ios::out | ios::binary);
+
+	if (tempfile.is_open()) {
+		cout << "\nERROR : The temperory file cannot be opened" << endl;
+		return;
+	}
+
+	Student student;
+	bool found = false;
+
+	file.clear();
+	file.seekg(0, ios::beg);
+
+	file.read(reinterpret_cast<char*>(&student), sizeof(student));
+
+	while (!(file.eof())) {
+		if (student.roll_no != roll_no) {
+			tempfile.write(reinterpret_cast<char*>(&student), sizeof(student));
+		}
+		else {
+			found = true;
+		}
+		file.read(reinterpret_cast<char*>(&student), sizeof(student));
+	}
+
+	tempfile.close();
+	file.close();
+
+	if (found) {
+		remove("student.dat");
+		rename("temp.dat", "student.dat");
+		cout << "\nStudent with Roll Number : " << roll_no << " record deleted succesfully" << endl;
+	}
+	else {
+		cout << "\nStudent with Roll Number : " << roll_no << " is not found" << endl;
+		remove("temp.dat");
+	}
 }
 int main()
 {
@@ -77,6 +199,7 @@ int main()
 
 		fstream file;
 
+
 		switch (choice)
 		{
 		case 1:
@@ -92,7 +215,7 @@ int main()
 		case 2:
 			file.open("student.dat", ios::in | ios::binary);
 			if (file.is_open()) {
-				DisplayDetails(file);
+				DisplayStudentDetails(file);
 				file.close();
 			}
 			else {
@@ -103,7 +226,7 @@ int main()
 		case 3:
 			file.open("student.dat", ios::in | ios::binary);
 			if (file.is_open()) {
-				UpdateDetails(file);
+				UpdateStudentDetails(file);
 				file.close();
 			}
 			else {
